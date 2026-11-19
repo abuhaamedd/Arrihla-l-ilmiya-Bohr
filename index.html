@@ -1,0 +1,1569 @@
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>مختبر الذرة التفاعلي | نموذج بور، الجدول الدوري والروابط الكيميائية</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  * { font-family: 'Cairo', sans-serif; box-sizing: border-box; }
+  body {
+    background: radial-gradient(circle at top center, #0f172a 0%, #020617 100%);
+    color: #f8fafc;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+  .glass {
+    background: rgba(15, 23, 42, 0.72);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(56, 189, 248, 0.2);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  }
+  .glow-cyan { box-shadow: 0 0 20px rgba(34, 211, 238, 0.35); }
+  .glow-emerald { box-shadow: 0 0 20px rgba(16, 185, 129, 0.35); }
+  .glow-amber { box-shadow: 0 0 20px rgba(245, 158, 11, 0.35); }
+  .glow-rose { box-shadow: 0 0 20px rgba(244, 63, 94, 0.35); }
+
+  .elem-btn {
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .elem-btn:hover {
+    transform: translateY(-3px) scale(1.06);
+    z-index: 10;
+  }
+  .elem-btn.active {
+    transform: scale(1.08);
+    box-shadow: 0 0 18px rgba(56, 189, 248, 0.8);
+    border-color: #38bdf8 !important;
+  }
+
+  /* Category colors */
+  .cat-alkali { background: linear-gradient(135deg, rgba(239,68,68,0.28), rgba(153,27,27,0.45)); border-color: rgba(248,113,113,0.5); }
+  .cat-alkaline { background: linear-gradient(135deg, rgba(249,115,22,0.28), rgba(154,52,18,0.45)); border-color: rgba(251,146,60,0.5); }
+  .cat-metal { background: linear-gradient(135deg, rgba(234,179,8,0.25), rgba(133,77,14,0.45)); border-color: rgba(250,204,21,0.5); }
+  .cat-metalloid { background: linear-gradient(135deg, rgba(20,184,166,0.28), rgba(17,94,89,0.45)); border-color: rgba(45,212,191,0.5); }
+  .cat-nonmetal { background: linear-gradient(135deg, rgba(59,130,246,0.28), rgba(30,64,175,0.45)); border-color: rgba(96,165,250,0.5); }
+  .cat-halogen { background: linear-gradient(135deg, rgba(168,85,247,0.28), rgba(107,33,168,0.45)); border-color: rgba(192,132,252,0.5); }
+  .cat-noble { background: linear-gradient(135deg, rgba(16,185,129,0.28), rgba(6,95,70,0.45)); border-color: rgba(52,211,153,0.5); }
+
+  @keyframes floatSlow {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-8px); }
+  }
+  .animate-float { animation: floatSlow 3.5s ease-in-out infinite; }
+
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-6px); }
+    75% { transform: translateX(6px); }
+  }
+  .shake { animation: shake 0.35s ease-in-out; }
+
+  @keyframes popIn {
+    0% { transform: scale(0.85); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+  }
+  .pop-in { animation: popIn 0.3s ease-out forwards; }
+
+  /* Custom Scrollbar */
+  ::-webkit-scrollbar { width: 8px; height: 8px; }
+  ::-webkit-scrollbar-track { background: #0f172a; }
+  ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+  ::-webkit-scrollbar-thumb:hover { background: #475569; }
+</style>
+</head>
+<body class="selection:bg-cyan-500 selection:text-slate-950">
+
+<!-- ================= START SCREEN ================= -->
+<div id="start-screen" class="fixed inset-0 z-50 flex flex-col items-center justify-center p-4 bg-slate-950/95 backdrop-blur-md">
+  <canvas id="bg-atom-canvas" class="absolute inset-0 w-full h-full opacity-35 pointer-events-none"></canvas>
+  <div class="relative z-10 max-w-2xl w-full text-center glass rounded-3xl p-6 sm:p-10 border-cyan-500/40 glow-cyan pop-in">
+    <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-cyan-500/15 border border-cyan-400/30 text-cyan-300 text-sm font-bold mb-4">
+      <span>⚛️</span> دورة ولعبة تفاعلية في الكيمياء الذرية
+    </div>
+    <h1 class="text-3xl sm:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-l from-cyan-300 via-blue-400 to-emerald-300 mb-4 leading-tight">
+      مختبر الذرة: رحلة بور والروابط الكيميائية
+    </h1>
+    <p class="text-slate-300 text-base sm:text-lg mb-6 leading-relaxed">
+      استكشف التركيب الذري وفق <strong class="text-cyan-300">نموذج بور</strong> والجدول الدوري لمندلييف، اختبر مهارتك في <strong class="text-amber-300">تأين الذرات</strong>، وتعلم كيف يحدد <strong class="text-emerald-300">مقياس بولينغ للسالبية الكهربائية</strong> نوع الرابطة (أيونية أم تساهمية)!
+    </p>
+
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-8 text-xs sm:text-sm">
+      <div class="bg-slate-900/80 border border-slate-700/80 rounded-xl p-3">
+        <div class="text-2xl mb-1">⚛️</div>
+        <div class="font-bold text-cyan-300">نموذج بور</div>
+        <div class="text-slate-400">والجدول الدوري</div>
+      </div>
+      <div class="bg-slate-900/80 border border-slate-700/80 rounded-xl p-3">
+        <div class="text-2xl mb-1">⚡</div>
+        <div class="font-bold text-amber-300">لعبة التأين</div>
+        <div class="text-slate-400">كاتيونات وأنيونات</div>
+      </div>
+      <div class="bg-slate-900/80 border border-slate-700/80 rounded-xl p-3">
+        <div class="text-2xl mb-1">🔗</div>
+        <div class="font-bold text-emerald-300">مختبر الروابط</div>
+        <div class="text-slate-400">مقياس بولينغ</div>
+      </div>
+      <div class="bg-slate-900/80 border border-slate-700/80 rounded-xl p-3">
+        <div class="text-2xl mb-1">🏆</div>
+        <div class="font-bold text-purple-300">التحدي النهائي</div>
+        <div class="text-slate-400">اختبار شامل</div>
+      </div>
+    </div>
+
+    <button id="btn-start-app" class="w-full sm:w-auto px-10 py-4 rounded-2xl bg-gradient-to-l from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 font-black text-xl shadow-lg shadow-cyan-500/30 transition transform hover:scale-105 active:scale-95 cursor-pointer">
+      🚀 ابدأ الرحلة العلمية
+    </button>
+  </div>
+</div>
+
+<!-- ================= MAIN APP CONTAINER ================= -->
+<div id="main-app" class="hidden flex flex-col min-h-screen">
+
+  <!-- TOP HUD & NAVIGATION -->
+  <header class="sticky top-0 z-30 glass border-b border-slate-800/80 px-3 sm:px-6 py-3">
+    <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3">
+      <!-- Brand -->
+      <div class="flex items-center gap-2.5">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-400 to-blue-600 flex items-center justify-center text-xl shadow-lg shadow-cyan-500/20">⚛️</div>
+        <div>
+          <h2 class="font-extrabold text-base sm:text-lg leading-tight text-white">مختبر الذرة</h2>
+          <p id="rank-label" class="text-xs text-cyan-400 font-semibold">الرتبة: متدرب كيميائي</p>
+        </div>
+      </div>
+
+      <!-- Navigation Tabs -->
+      <nav class="flex items-center gap-1.5 sm:gap-2 overflow-x-auto pb-1 sm:pb-0 order-3 lg:order-2 w-full lg:w-auto justify-center">
+        <button onclick="switchTab('course')" id="tab-course" class="nav-tab px-3 py-2 rounded-xl text-xs sm:text-sm font-bold transition whitespace-nowrap bg-cyan-500/20 text-cyan-300 border border-cyan-400/50">
+          1. بور والجدول الدوري
+        </button>
+        <button onclick="switchTab('ionization')" id="tab-ionization" class="nav-tab px-3 py-2 rounded-xl text-xs sm:text-sm font-bold transition whitespace-nowrap bg-slate-800/70 text-slate-300 border border-slate-700 hover:bg-slate-800">
+          2. لعبة التأين ⚡
+        </button>
+        <button onclick="switchTab('bonding')" id="tab-bonding" class="nav-tab px-3 py-2 rounded-xl text-xs sm:text-sm font-bold transition whitespace-nowrap bg-slate-800/70 text-slate-300 border border-slate-700 hover:bg-slate-800">
+          3. الروابط وبولينغ 🔗
+        </button>
+        <button onclick="switchTab('quiz')" id="tab-quiz" class="nav-tab px-3 py-2 rounded-xl text-xs sm:text-sm font-bold transition whitespace-nowrap bg-slate-800/70 text-slate-300 border border-slate-700 hover:bg-slate-800">
+          4. الاختبار 🏆
+        </button>
+      </nav>
+
+      <!-- Score & Sound -->
+      <div class="flex items-center gap-2 sm:gap-3 order-2 lg:order-3">
+        <div class="flex items-center gap-1.5 bg-slate-900/90 border border-amber-500/40 px-3 py-1.5 rounded-xl">
+          <span class="text-amber-400 text-sm">⭐</span>
+          <span id="global-score" class="font-black text-amber-300 text-sm sm:text-base">0</span>
+          <span class="text-xs text-slate-400 hidden sm:inline">نقطة</span>
+        </div>
+        <button id="btn-sound" onclick="toggleSound()" class="w-9 h-9 rounded-xl bg-slate-800/90 border border-slate-700 flex items-center justify-center hover:bg-slate-700 transition text-lg" title="تشغيل/كتم الصوت">
+          🔊
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN CONTENT AREA -->
+  <main class="flex-1 max-w-7xl w-full mx-auto p-3 sm:p-6">
+
+    <!-- ========================================================= -->
+    <!-- MODULE 1: BOHR ATOMIC STRUCTURE & MENDELEEV PERIODIC TABLE -->
+    <!-- ========================================================= -->
+    <section id="sec-course" class="space-y-6">
+      <!-- Intro Course Banner -->
+      <div class="glass rounded-2xl p-4 sm:p-5 border-cyan-500/30">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div>
+            <h3 class="text-xl sm:text-2xl font-black text-cyan-300 mb-1">الدرس التفاعلي: نموذج بور والجدول الدوري لمندلييف</h3>
+            <p class="text-sm text-slate-300 leading-relaxed">
+              وفق <strong class="text-white">نموذج نيلز بور (1913)</strong>، تدور الإلكترونات حول النواة في مستويات طاقة محددة (مدارات: <span class="text-cyan-300 font-bold" dir="ltr">K, L, M, N</span>) تتسع بالترتيب لـ <span class="text-amber-300 font-bold">2، 8، 8، 2</span> للعناصر العشرين الأولى. انقر على أي عنصر في الجدول الدوري لاستكشاف ذرته!
+            </p>
+          </div>
+          <div class="flex flex-wrap gap-2 shrink-0 text-xs">
+            <span class="px-2.5 py-1 rounded-lg cat-alkali border">فلزات قلوية</span>
+            <span class="px-2.5 py-1 rounded-lg cat-alkaline border">قلوية ترابية</span>
+            <span class="px-2.5 py-1 rounded-lg cat-nonmetal border">لافلزات</span>
+            <span class="px-2.5 py-1 rounded-lg cat-halogen border">هالوجينات</span>
+            <span class="px-2.5 py-1 rounded-lg cat-noble border">غازات نبيلة</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        <!-- Periodic Table (7 cols) -->
+        <div class="lg:col-span-7 glass rounded-2xl p-4 sm:p-5">
+          <div class="flex items-center justify-between mb-3">
+            <h4 class="font-extrabold text-base sm:text-lg text-white flex items-center gap-2">
+              <span>🧪</span> الجدول الدوري للعناصر الرئيسية (Z = 1 إلى 20)
+            </h4>
+            <span class="text-xs text-slate-400">اضغط على عنصر لعرض مداراته</span>
+          </div>
+
+          <!-- Group headers -->
+          <div class="grid grid-cols-8 gap-1.5 sm:gap-2 mb-2 text-center text-[10px] sm:text-xs font-bold text-slate-400" dir="ltr">
+            <div>1A</div><div>2A</div><div>3A</div><div>4A</div><div>5A</div><div>6A</div><div>7A</div><div>8A</div>
+          </div>
+
+          <!-- Periodic Grid (LTR for standard chemistry layout!) -->
+          <div id="periodic-grid" class="grid grid-cols-8 gap-1.5 sm:gap-2" dir="ltr">
+            <!-- Populated by JS -->
+          </div>
+
+          <!-- Bohr Rules Quick Cards -->
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-5 text-xs">
+            <div class="bg-slate-900/80 border border-slate-700/80 rounded-xl p-3">
+              <div class="font-bold text-cyan-300 mb-1">🎯 قاعدة الثمانية (Octet)</div>
+              <p class="text-slate-300">تميل الذرات لامتلاك 8 إلكترونات في مدارها الأخير (أو 2 للهيدروجين والليثيوم) لتصبح مستقرة كالغازات النبيلة.</p>
+            </div>
+            <div class="bg-slate-900/80 border border-slate-700/80 rounded-xl p-3">
+              <div class="font-bold text-amber-300 mb-1">📊 إلكترونات التكافؤ</div>
+              <p class="text-slate-300">هي إلكترونات المدار الأخير، ورقم المجموعة (1A إلى 8A) يساوي عددها ويحدد سلوك العنصر الكيميائي.</p>
+            </div>
+            <div class="bg-slate-900/80 border border-slate-700/80 rounded-xl p-3">
+              <div class="font-bold text-emerald-300 mb-1">🧲 سالبية بولينغ (EN)</div>
+              <p class="text-slate-300">مقياس قدرة الذرة على جذب إلكترونات الرابطة. تزداد من اليسار لليمين، والفلور (F = 3.98) هو الأعلى!</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bohr Atom Live Visualizer (5 cols) -->
+        <div class="lg:col-span-5 glass rounded-2xl p-4 sm:p-5 flex flex-col items-center">
+          <div class="w-full flex items-center justify-between mb-2">
+            <div>
+              <span id="bohr-elem-symbol" class="text-3xl font-black text-cyan-300" dir="ltr">Na</span>
+              <span id="bohr-elem-name" class="text-xl font-bold text-white mr-2">صوديوم</span>
+            </div>
+            <div class="text-left">
+              <div class="text-xs text-slate-400">العدد الذري</div>
+              <div id="bohr-elem-z" class="text-lg font-black text-amber-300" dir="ltr">Z = 11</div>
+            </div>
+          </div>
+
+          <div class="relative w-full max-w-[320px] aspect-square flex items-center justify-center my-1">
+            <canvas id="bohr-canvas" width="320" height="320" class="w-full h-full"></canvas>
+          </div>
+
+          <!-- Element Properties Grid -->
+          <div class="w-full grid grid-cols-2 gap-2.5 mt-2 text-sm">
+            <div class="bg-slate-900/80 border border-slate-800 rounded-xl p-2.5 text-center">
+              <div class="text-xs text-slate-400">التوزيع الإلكتروني</div>
+              <div id="bohr-config" class="font-black text-cyan-300 text-base mt-0.5" dir="ltr">2, 8, 1</div>
+            </div>
+            <div class="bg-slate-900/80 border border-slate-800 rounded-xl p-2.5 text-center">
+              <div class="text-xs text-slate-400">سالبية بولينغ (EN)</div>
+              <div id="bohr-en" class="font-black text-emerald-300 text-base mt-0.5" dir="ltr">0.93</div>
+            </div>
+            <div class="bg-slate-900/80 border border-slate-800 rounded-xl p-2.5 text-center">
+              <div class="text-xs text-slate-400">إلكترونات التكافؤ</div>
+              <div id="bohr-valence" class="font-black text-amber-300 text-base mt-0.5">1 إلكترون</div>
+            </div>
+            <div class="bg-slate-900/80 border border-slate-800 rounded-xl p-2.5 text-center">
+              <div class="text-xs text-slate-400">الميل الكيميائي</div>
+              <div id="bohr-tendency" class="font-bold text-purple-300 text-xs mt-1">يفقد 1e⁻ (كاتيون +1)</div>
+            </div>
+          </div>
+
+          <p id="bohr-desc" class="w-full mt-3 text-xs sm:text-sm text-slate-300 bg-slate-900/60 border border-slate-800 rounded-xl p-3 leading-relaxed">
+            الصوديوم فلز قلوي نشط، يمتلك إلكتروناً واحداً في مداره الأخير M، لذا يميل لفقده بسهولة للوصول إلى التوزيع المستقر للنيون (2, 8).
+          </p>
+
+          <button onclick="switchTab('ionization')" class="w-full mt-3 py-2.5 rounded-xl bg-gradient-to-l from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-slate-950 font-black text-sm transition cursor-pointer">
+            ⚡ انتقل إلى لعبة تأين الذرات ←
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================= -->
+    <!-- MODULE 2: IONIZATION GAME (لعبة تأين الذرات)               -->
+    <!-- ========================================================= -->
+    <section id="sec-ionization" class="hidden space-y-5">
+      <div class="glass rounded-2xl p-4 sm:p-5 border-amber-500/30 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h3 class="text-xl sm:text-2xl font-black text-amber-300">⚡ لعبة تأين الذرات (Ionization Lab)</h3>
+          <p class="text-sm text-slate-300 mt-1">
+            ساعد الذرة المتعادلة على الوصول إلى <strong class="text-white">الاستقرار الإلكتروني (قاعدة الثمانية)</strong> عبر نزع أو إضافة إلكترونات لتكوين <span class="text-rose-300 font-bold">كاتيون (+)</span> أو <span class="text-cyan-300 font-bold">أنيون (-)</span>.
+          </p>
+        </div>
+        <div class="flex items-center gap-3 shrink-0">
+          <div class="bg-slate-900/90 border border-slate-700 px-3 py-1.5 rounded-xl text-sm font-bold">
+            الجولة: <span id="ion-round" class="text-amber-300">1</span> / 8
+          </div>
+          <div id="ion-hearts" class="text-lg tracking-widest">❤️❤️❤️</div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
+        <!-- Interactive Ion Canvas -->
+        <div class="lg:col-span-6 glass rounded-2xl p-5 flex flex-col items-center relative">
+          <div class="w-full flex items-center justify-between mb-2">
+            <div class="text-sm font-bold text-slate-300">
+              الذرة المستهدفة: <span id="ion-target-name" class="text-white text-lg font-black">صوديوم (Na)</span>
+            </div>
+            <div id="ion-badge" class="px-3 py-1 rounded-full text-xs font-black bg-slate-800 text-slate-300 border border-slate-600">
+              ذرة متعادلة (0)
+            </div>
+          </div>
+
+          <div class="relative w-full max-w-[330px] aspect-square flex items-center justify-center">
+            <canvas id="ion-canvas" width="330" height="330" class="w-full h-full"></canvas>
+          </div>
+
+          <div class="flex items-center gap-4 mt-2 text-sm font-bold">
+            <span class="text-rose-400">البروتونات (+): <strong id="ion-protons">11</strong></span>
+            <span class="text-cyan-400">الإلكترونات (-): <strong id="ion-electrons">11</strong></span>
+            <span class="text-amber-300">الشحنة: <strong id="ion-charge" dir="ltr">0</strong></span>
+          </div>
+        </div>
+
+        <!-- Controls & Feedback -->
+        <div class="lg:col-span-6 glass rounded-2xl p-5 space-y-5">
+          <div class="bg-slate-900/80 border border-slate-800 rounded-xl p-4">
+            <div class="text-xs text-slate-400 mb-1">التوزيع الإلكتروني الحالي:</div>
+            <div id="ion-current-config" class="text-2xl font-black text-cyan-300 tracking-wider" dir="ltr">2, 8, 1</div>
+            <p id="ion-hint" class="text-xs sm:text-sm text-slate-300 mt-2">
+              تلميح: هل من الأسهل لهذه الذرة أن تفقد إلكترونات المدار الأخير أم تكتسب إلكترونات لإكماله إلى 8؟
+            </p>
+          </div>
+
+          <!-- Electron manipulation buttons -->
+          <div class="grid grid-cols-2 gap-4">
+            <button onclick="modifyIonElectrons(-1)" class="py-4 px-3 rounded-2xl bg-rose-500/20 hover:bg-rose-500/30 border-2 border-rose-500/60 text-rose-200 font-black text-base sm:text-lg transition active:scale-95 cursor-pointer flex flex-col items-center gap-1">
+              <span class="text-2xl">➖⚡</span>
+              <span>انزع إلكترون (e⁻)</span>
+              <span class="text-xs font-normal text-rose-300">يزيد الشحنة الموجبة (+)</span>
+            </button>
+            <button onclick="modifyIonElectrons(1)" class="py-4 px-3 rounded-2xl bg-cyan-500/20 hover:bg-cyan-500/30 border-2 border-cyan-500/60 text-cyan-200 font-black text-base sm:text-lg transition active:scale-95 cursor-pointer flex flex-col items-center gap-1">
+              <span class="text-2xl">➕⚡</span>
+              <span>أضف إلكترون (e⁻)</span>
+              <span class="text-xs font-normal text-cyan-300">يزيد الشحنة السالبة (-)</span>
+            </button>
+          </div>
+
+          <button id="btn-check-ion" onclick="checkIonStability()" class="w-full py-4 rounded-2xl bg-gradient-to-l from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-slate-950 font-black text-lg shadow-lg shadow-emerald-500/25 transition active:scale-95 cursor-pointer">
+            ✅ تحقق من استقرار الأيون
+          </button>
+
+          <div id="ion-feedback" class="hidden rounded-xl p-4 text-sm font-bold leading-relaxed"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================= -->
+    <!-- MODULE 3: BONDING GAME & PAULING ELECTRONEGATIVITY        -->
+    <!-- ========================================================= -->
+    <section id="sec-bonding" class="hidden space-y-5">
+      <div class="glass rounded-2xl p-4 sm:p-5 border-emerald-500/30 flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <h3 class="text-xl sm:text-2xl font-black text-emerald-300">🔗 مختبر الروابط ومقياس بولينغ (Pauling Scale)</h3>
+          <p class="text-sm text-slate-300 mt-1">
+            احسب <strong class="text-white">فرق السالبية الكهربائية (ΔEN)</strong> بين الذرتين لتحديد نوع الرابطة: هل ستنتقل الإلكترونات (<span class="text-amber-300 font-bold">أيونية</span>) أم ستتشاركها الذرتان (<span class="text-cyan-300 font-bold">تساهمية</span>)؟
+          </p>
+        </div>
+        <div class="flex items-center gap-2 shrink-0">
+          <button id="btn-bond-challenge" onclick="setBondMode('challenge')" class="px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold bg-emerald-500 text-slate-950 cursor-pointer">🏆 وضع التحدي</button>
+          <button id="btn-bond-sandbox" onclick="setBondMode('sandbox')" class="px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold bg-slate-800 text-slate-300 border border-slate-700 cursor-pointer">🧪 المختبر الحر</button>
+        </div>
+      </div>
+
+      <!-- Pauling Scale Legend Bar -->
+      <div class="glass rounded-2xl p-4">
+        <div class="flex items-center justify-between text-xs font-bold mb-2">
+          <span class="text-cyan-300">تساهمية غير قطبية (0 - 0.4)</span>
+          <span class="text-purple-300">تساهمية قطبية (0.4 - 1.7)</span>
+          <span class="text-amber-300">رابطة أيونية (≥ 1.7)</span>
+        </div>
+        <div class="relative h-5 rounded-full overflow-hidden flex border border-slate-700" dir="ltr">
+          <div class="h-full bg-gradient-to-r from-cyan-500 to-blue-500" style="width: 12%"></div>
+          <div class="h-full bg-gradient-to-r from-blue-500 via-purple-500 to-fuchsia-500" style="width: 39%"></div>
+          <div class="h-full bg-gradient-to-r from-amber-500 to-rose-500" style="width: 49%"></div>
+          <!-- Dynamic Indicator Needle -->
+          <div id="pauling-needle" class="absolute top-0 bottom-0 w-1.5 bg-white shadow-[0_0_10px_#fff] transition-all duration-500" style="left: 0%"></div>
+        </div>
+        <div class="flex justify-between text-[10px] text-slate-400 mt-1 font-mono" dir="ltr">
+          <span>0.0</span><span>0.4</span><span>1.7</span><span>3.3+</span>
+        </div>
+      </div>
+
+      <!-- Sandbox Selectors (Hidden in Challenge mode) -->
+      <div id="bond-sandbox-controls" class="hidden glass rounded-2xl p-4 flex flex-wrap items-center justify-center gap-4">
+        <div class="flex items-center gap-2">
+          <label class="text-sm font-bold text-slate-300">الذرة الأولى:</label>
+          <select id="sandbox-atom1" onchange="updateSandboxBond()" class="bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm font-bold text-white"></select>
+        </div>
+        <span class="text-xl font-black text-emerald-400">+</span>
+        <div class="flex items-center gap-2">
+          <label class="text-sm font-bold text-slate-300">الذرة الثانية:</label>
+          <select id="sandbox-atom2" onchange="updateSandboxBond()" class="bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm font-bold text-white"></select>
+        </div>
+        <button onclick="triggerBondAnimation()" class="px-5 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-sm cursor-pointer">
+          ⚡ كوّن الرابطة!
+        </button>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        <!-- Bonding Animation Canvas -->
+        <div class="lg:col-span-7 glass rounded-2xl p-4 flex flex-col items-center">
+          <div class="w-full flex items-center justify-between mb-2">
+            <div class="text-sm font-bold text-slate-300">
+              التفاعل: <span id="bond-pair-title" class="text-white text-lg font-black" dir="ltr">Na + Cl</span>
+            </div>
+            <div id="bond-round-box" class="text-xs sm:text-sm font-bold bg-slate-900 px-3 py-1 rounded-lg border border-slate-700">
+              التحدي <span id="bond-round" class="text-emerald-300">1</span> / 8
+            </div>
+          </div>
+
+          <div class="w-full relative rounded-xl overflow-hidden bg-slate-950/70 border border-slate-800">
+            <canvas id="bond-canvas" width="560" height="300" class="w-full h-auto block"></canvas>
+          </div>
+
+          <!-- EN Calculation Readout -->
+          <div class="w-full grid grid-cols-3 gap-2 mt-3 text-center">
+            <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-2.5">
+              <div class="text-xs text-slate-400">سالبية <span id="bond-sym1" dir="ltr">Na</span></div>
+              <div id="bond-en1" class="text-lg font-black text-cyan-300" dir="ltr">0.93</div>
+            </div>
+            <div class="bg-slate-900/90 border border-emerald-500/40 rounded-xl p-2.5">
+              <div class="text-xs text-emerald-300 font-bold">الفرق (ΔEN)</div>
+              <div id="bond-delta" class="text-xl font-black text-white" dir="ltr">2.23</div>
+            </div>
+            <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-2.5">
+              <div class="text-xs text-slate-400">سالبية <span id="bond-sym2" dir="ltr">Cl</span></div>
+              <div id="bond-en2" class="text-lg font-black text-amber-300" dir="ltr">3.16</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Decision Panel -->
+        <div class="lg:col-span-5 glass rounded-2xl p-5 space-y-4">
+          <h4 id="bond-question-title" class="font-black text-lg text-white">ما نوع الرابطة المتكونة بين هاتين الذرتين؟</h4>
+          <p class="text-xs sm:text-sm text-slate-300">
+            استعن بقيمة <strong class="text-emerald-300">فرق السالبية الكهربائية لبولينغ (ΔEN)</strong> أعلاه لاختيار الرابطة الصحيحة ومشاهدة حركة الإلكترونات!
+          </p>
+
+          <div id="bond-choice-buttons" class="space-y-3">
+            <button onclick="answerBondChallenge('ionic')" class="w-full p-3.5 rounded-xl bg-amber-500/15 hover:bg-amber-500/25 border border-amber-500/50 text-right transition flex items-center justify-between cursor-pointer group">
+              <div>
+                <div class="font-black text-amber-300 text-base">⚡ رابطة أيونية (Ionic)</div>
+                <div class="text-xs text-slate-300">انتقال كلي للإلكترونات (ΔEN ≥ 1.7)</div>
+              </div>
+              <span class="text-xl group-hover:-translate-x-1 transition">←</span>
+            </button>
+
+            <button onclick="answerBondChallenge('polar')" class="w-full p-3.5 rounded-xl bg-purple-500/15 hover:bg-purple-500/25 border border-purple-500/50 text-right transition flex items-center justify-between cursor-pointer group">
+              <div>
+                <div class="font-black text-purple-300 text-base">🧲 رابطة تساهمية قطبية (Polar Covalent)</div>
+                <div class="text-xs text-slate-300">مشاركة غير متساوية للإلكترونات (0.4 &lt; ΔEN &lt; 1.7)</div>
+              </div>
+              <span class="text-xl group-hover:-translate-x-1 transition">←</span>
+            </button>
+
+            <button onclick="answerBondChallenge('nonpolar')" class="w-full p-3.5 rounded-xl bg-cyan-500/15 hover:bg-cyan-500/25 border border-cyan-500/50 text-right transition flex items-center justify-between cursor-pointer group">
+              <div>
+                <div class="font-black text-cyan-300 text-base">🤝 رابطة تساهمية غير قطبية (Non-polar)</div>
+                <div class="text-xs text-slate-300">مشاركة متساوية للإلكترونات (ΔEN ≤ 0.4)</div>
+              </div>
+              <span class="text-xl group-hover:-translate-x-1 transition">←</span>
+            </button>
+          </div>
+
+          <div id="bond-feedback" class="hidden rounded-xl p-4 text-sm leading-relaxed"></div>
+
+          <button id="btn-next-bond" onclick="nextBondRound()" class="hidden w-full py-3 rounded-xl bg-gradient-to-l from-cyan-500 to-blue-600 text-slate-950 font-black text-base cursor-pointer">
+            التحدي التالي ←
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================= -->
+    <!-- MODULE 4: COMPREHENSIVE QUIZ (الاختبار النهائي)            -->
+    <!-- ========================================================= -->
+    <section id="sec-quiz" class="hidden max-w-3xl mx-auto space-y-5">
+      <div class="glass rounded-2xl p-5 border-purple-500/30 flex items-center justify-between">
+        <div>
+          <h3 class="text-xl sm:text-2xl font-black text-purple-300">🏆 الاختبار النهائي في الكيمياء الذرية</h3>
+          <p class="text-xs sm:text-sm text-slate-300 mt-1">أجب عن 10 أسئلة حول نموذج بور، الجدول الدوري، التأين ومقياس بولينغ.</p>
+        </div>
+        <div class="text-left shrink-0">
+          <div id="quiz-hearts" class="text-lg tracking-widest mb-1">❤️❤️❤️</div>
+          <div class="text-xs font-bold text-slate-400">السؤال <span id="quiz-progress" class="text-purple-300">1 / 10</span></div>
+        </div>
+      </div>
+
+      <!-- Progress Bar -->
+      <div class="w-full h-2.5 bg-slate-900 rounded-full overflow-hidden border border-slate-800">
+        <div id="quiz-bar" class="h-full bg-gradient-to-l from-purple-500 to-cyan-400 transition-all duration-500" style="width: 10%"></div>
+      </div>
+
+      <!-- Question Card -->
+      <div id="quiz-card" class="glass rounded-2xl p-5 sm:p-7 space-y-5">
+        <div class="flex items-center justify-between">
+          <span id="quiz-tag" class="px-3 py-1 rounded-full bg-purple-500/20 border border-purple-400/40 text-purple-300 text-xs font-bold">نموذج بور</span>
+          <span id="quiz-streak" class="text-xs font-bold text-amber-300 hidden">🔥 سلسلة إجابات: 0</span>
+        </div>
+
+        <h4 id="quiz-question" class="text-lg sm:text-2xl font-extrabold text-white leading-relaxed">
+          جاري تحميل السؤال...
+        </h4>
+
+        <div id="quiz-options" class="grid grid-cols-1 gap-3">
+          <!-- Options injected by JS -->
+        </div>
+
+        <div id="quiz-explanation" class="hidden rounded-xl p-4 text-sm leading-relaxed border"></div>
+
+        <button id="btn-quiz-next" onclick="nextQuizQuestion()" class="hidden w-full py-3.5 rounded-xl bg-gradient-to-l from-purple-500 to-indigo-600 hover:from-purple-400 hover:to-indigo-500 text-white font-black text-base cursor-pointer">
+          السؤال التالي ←
+        </button>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<!-- ================= GAME OVER / VICTORY MODAL ================= -->
+<div id="result-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/90 backdrop-blur-md">
+  <div class="glass max-w-md w-full rounded-3xl p-6 sm:p-8 text-center border-cyan-500/40 glow-cyan pop-in">
+    <div id="modal-icon" class="text-6xl mb-3">🏆</div>
+    <h3 id="modal-title" class="text-2xl sm:text-3xl font-black text-white mb-2">أحسنت يا عالم الذرة!</h3>
+    <p id="modal-subtitle" class="text-slate-300 text-sm sm:text-base mb-5">لقد أتممت التحدي بنجاح مبهر.</p>
+
+    <div class="grid grid-cols-2 gap-3 mb-6">
+      <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-3">
+        <div class="text-xs text-slate-400">نقاطك الإجمالية</div>
+        <div id="modal-score" class="text-2xl font-black text-amber-300">0</div>
+      </div>
+      <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-3">
+        <div class="text-xs text-slate-400">التقييم العلمي</div>
+        <div id="modal-grade" class="text-lg font-black text-emerald-300 mt-0.5">ممتاز</div>
+      </div>
+    </div>
+
+    <div class="flex flex-col gap-2.5">
+      <button id="modal-btn-retry" class="w-full py-3 rounded-xl bg-gradient-to-l from-cyan-500 to-blue-600 text-slate-950 font-black text-base cursor-pointer hover:opacity-95">
+        🔄 إعادة التحدي
+      </button>
+      <button onclick="closeResultModal()" class="w-full py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-sm cursor-pointer">
+        العودة إلى المختبر
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ================= JAVASCRIPT ENGINE ================= -->
+<script>
+// =========================================================================
+// 1. WEB AUDIO API SOUND ENGINE
+// =========================================================================
+const AudioEngine = {
+  ctx: null,
+  enabled: true,
+  init() {
+    if (!this.ctx) {
+      const AudioCtx = window.AudioContext || window.webkitAudioContext;
+      if (AudioCtx) this.ctx = new AudioCtx();
+    }
+    if (this.ctx && this.ctx.state === 'suspended') this.ctx.resume();
+  },
+  playTone(freq, type = 'sine', duration = 0.15, vol = 0.12, delay = 0) {
+    if (!this.enabled || !this.ctx) return;
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    osc.type = type;
+    osc.frequency.setValueAtTime(freq, this.ctx.currentTime + delay);
+    gain.gain.setValueAtTime(vol, this.ctx.currentTime + delay);
+    gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + delay + duration);
+    osc.connect(gain);
+    gain.connect(this.ctx.destination);
+    osc.start(this.ctx.currentTime + delay);
+    osc.stop(this.ctx.currentTime + delay + duration);
+  },
+  click() { this.playTone(620, 'sine', 0.06, 0.08); },
+  electronAdd() { this.playTone(440, 'triangle', 0.1, 0.1); this.playTone(660, 'sine', 0.12, 0.1, 0.05); },
+  electronRemove() { this.playTone(520, 'triangle', 0.1, 0.1); this.playTone(320, 'sine', 0.12, 0.1, 0.05); },
+  correct() {
+    this.playTone(523.25, 'sine', 0.15, 0.12, 0);
+    this.playTone(659.25, 'sine', 0.15, 0.12, 0.09);
+    this.playTone(783.99, 'sine', 0.25, 0.14, 0.18);
+  },
+  wrong() {
+    this.playTone(220, 'sawtooth', 0.18, 0.1, 0);
+    this.playTone(170, 'sawtooth', 0.25, 0.1, 0.14);
+  },
+  bond() {
+    this.playTone(392, 'sine', 0.2, 0.1, 0);
+    this.playTone(493.88, 'sine', 0.2, 0.1, 0.08);
+    this.playTone(587.33, 'sine', 0.2, 0.1, 0.16);
+    this.playTone(783.99, 'triangle', 0.35, 0.14, 0.24);
+  },
+  victory() {
+    [523, 659, 784, 1046].forEach((f, i) => this.playTone(f, 'triangle', 0.25, 0.14, i * 0.11));
+  }
+};
+
+function toggleSound() {
+  AudioEngine.enabled = !AudioEngine.enabled;
+  document.getElementById('btn-sound').textContent = AudioEngine.enabled ? '🔊' : '🔇';
+  if (AudioEngine.enabled) { AudioEngine.init(); AudioEngine.click(); }
+}
+
+// =========================================================================
+// 2. CHEMISTRY DATA: ELEMENTS 1 TO 20 (BOHR + PAULING EN)
+// =========================================================================
+const ELEMENTS = [
+  { z:1, sym:'H', name:'هيدروجين', n:0, shells:[1], en:2.20, col:1, row:1, cat:'nonmetal', tendency:'يشارك بـ 1e⁻ (أو يفقد)', desc:'أخف عنصر في الكون، يمتلك إلكتروناً واحداً في المدار K ويميل للمشاركة لتكوين روابط تساهمية.' },
+  { z:2, sym:'He', name:'هيليوم', n:2, shells:[2], en:0.00, col:8, row:1, cat:'noble', tendency:'مستقر (غاز نبيل)', desc:'غاز نبيل، مداره الأول K ممتلئ تماماً بـ 2 إلكترون (قاعدة الثنائية)، لذا لا يميل للتفاعل.' },
+  { z:3, sym:'Li', name:'ليثيوم', n:4, shells:[2,1], en:0.98, col:1, row:2, cat:'alkali', tendency:'يفقد 1e⁻ (كاتيون Li⁺)', desc:'فلز قلوي خفيف، يفقد إلكترونه الوحيد في المدار L بسهولة ليصبح أيوناً موجباً مستقراً مثل الهيليوم.' },
+  { z:4, sym:'Be', name:'بيريليوم', n:5, shells:[2,2], en:1.57, col:2, row:2, cat:'alkaline', tendency:'يفقد 2e⁻ (كاتيون Be²⁺)', desc:'فلز قلوي ترابي يمتلك إلكترونين في مداره الأخير L.' },
+  { z:5, sym:'B', name:'بورون', n:6, shells:[2,3], en:2.04, col:3, row:2, cat:'metalloid', tendency:'يشارك بـ 3e⁻', desc:'شبه فلز يمتلك 3 إلكترونات تكافؤ ويميل لتكوين روابط تساهمية.' },
+  { z:6, sym:'C', name:'كربون', n:6, shells:[2,4], en:2.55, col:4, row:2, cat:'nonmetal', tendency:'يشارك بـ 4e⁻ (تساهمية)', desc:'أساس الحياة العضوية! يمتلك 4 إلكترونات في المدار L لذا يشارك بـ 4 إلكترونات لتكوين 4 روابط تساهمية.' },
+  { z:7, sym:'N', name:'نيتروجين', n:7, shells:[2,5], en:3.04, col:5, row:2, cat:'nonmetal', tendency:'يكتسب أو يشارك بـ 3e⁻', desc:'لافلز ذو سالبية كهربائية عالية (3.04)، يحتاج إلى 3 إلكترونات لإكمال مداره الأخير إلى 8.' },
+  { z:8, sym:'O', name:'أكسجين', n:8, shells:[2,6], en:3.44, col:6, row:2, cat:'nonmetal', tendency:'يكتسب 2e⁻ (أنيون O²⁻)', desc:'ثاني أعلى عنصر في السالبية الكهربائية (3.44)! يميل لاكتساب أو مشاركة إلكترونين لتحقيق قاعدة الثمانية.' },
+  { z:9, sym:'F', name:'فلور', n:10, shells:[2,7], en:3.98, col:7, row:2, cat:'halogen', tendency:'يكتسب 1e⁻ (أنيون F⁻)', desc:'ملك السالبية الكهربائية في مقياس بولينغ (3.98)! هالوجين شديد النشاط ينقصه إلكترون واحد فقط للاستقرار.' },
+  { z:10, sym:'Ne', name:'نيون', n:10, shells:[2,8], en:0.00, col:8, row:2, cat:'noble', tendency:'مستقر (غاز نبيل)', desc:'غاز نبيل خامل، مداره الثاني L ممتلئ بـ 8 إلكترونات (حقق قاعدة الثمانية تماماً).' },
+  { z:11, sym:'Na', name:'صوديوم', n:12, shells:[2,8,1], en:0.93, col:1, row:3, cat:'alkali', tendency:'يفقد 1e⁻ (كاتيون Na⁺)', desc:'فلز قلوي نشط، يمتلك إلكتروناً واحداً في المدار M ويفقده بسهولة ليصبح أيوناً موجباً (Na⁺) بتوزيع النيون.' },
+  { z:12, sym:'Mg', name:'مغنيسيوم', n:12, shells:[2,8,2], en:1.31, col:2, row:3, cat:'alkaline', tendency:'يفقد 2e⁻ (كاتيون Mg²⁺)', desc:'فلز قلوي ترابي يفقد إلكترونين من مداره M ليكوّن أيون المغنيسيوم الموجب (Mg²⁺).' },
+  { z:13, sym:'Al', name:'ألومنيوم', n:14, shells:[2,8,3], en:1.61, col:3, row:3, cat:'metal', tendency:'يفقد 3e⁻ (كاتيون Al³⁺)', desc:'فلز خفيف يمتلك 3 إلكترونات في المدار M ويفقدها ليكوّن كاتيون (Al³⁺).' },
+  { z:14, sym:'Si', name:'سيليكون', n:14, shells:[2,8,4], en:1.90, col:4, row:3, cat:'metalloid', tendency:'يشارك بـ 4e⁻', desc:'شبه فلز أساسي في صناعة الرقائق الإلكترونية، يمتلك 4 إلكترونات تكافؤ.' },
+  { z:15, sym:'P', name:'فوسفور', n:16, shells:[2,8,5], en:2.19, col:5, row:3, cat:'nonmetal', tendency:'يكتسب أو يشارك بـ 3e⁻', desc:'لافلز يمتلك 5 إلكترونات في المدار M ويحتاج لـ 3 إلكترونات للاستقرار.' },
+  { z:16, sym:'S', name:'كبريت', n:16, shells:[2,8,6], en:2.58, col:6, row:3, cat:'nonmetal', tendency:'يكتسب 2e⁻ (أنيون S²⁻)', desc:'لافلز يمتلك 6 إلكترونات تكافؤ، يميل لاكتساب إلكترونين لتكوين أنيون الكبريتيد (S²⁻).' },
+  { z:17, sym:'Cl', name:'كلور', n:18, shells:[2,8,7], en:3.16, col:7, row:3, cat:'halogen', tendency:'يكتسب 1e⁻ (أنيون Cl⁻)', desc:'هالوجين عالي السالبية (3.16)، يكتسب إلكتروناً واحداً بسهولة ليصبح أيون الكلوريد (Cl⁻) المستقر.' },
+  { z:18, sym:'Ar', name:'أرغون', n:22, shells:[2,8,8], en:0.00, col:8, row:3, cat:'noble', tendency:'مستقر (غاز نبيل)', desc:'غاز نبيل، يمتلك 8 إلكترونات في المدار M، مستقر تماماً ولا يميل للتأين.' },
+  { z:19, sym:'K', name:'بوتاسيوم', n:20, shells:[2,8,8,1], en:0.82, col:1, row:4, cat:'alkali', tendency:'يفقد 1e⁻ (كاتيون K⁺)', desc:'فلز قلوي ذو سالبية منخفضة جداً (0.82)، يفقد إلكترون المدار N بشدة ليكوّن كاتيون (K⁺).' },
+  { z:20, sym:'Ca', name:'كالسيوم', n:20, shells:[2,8,8,2], en:1.00, col:2, row:4, cat:'alkaline', tendency:'يفقد 2e⁻ (كاتيون Ca²⁺)', desc:'فلز قلوي ترابي مهم للعظام، يفقد إلكترونين من المدار N ليكوّن كاتيون (Ca²⁺).' }
+];
+
+function getElem(sym) { return ELEMENTS.find(e => e.sym === sym); }
+
+// Helper to compute Bohr shells for arbitrary electron count (0 to 20)
+function computeShells(eCount) {
+  const caps = [2, 8, 8, 2];
+  const res = [];
+  let rem = Math.max(0, Math.min(20, eCount));
+  for (let c of caps) {
+    if (rem <= 0) break;
+    const take = Math.min(rem, c);
+    res.push(take);
+    rem -= take;
+  }
+  return res;
+}
+
+// =========================================================================
+// 3. GLOBAL STATE & NAVIGATION
+// =========================================================================
+let globalScore = 0;
+let activeTab = 'course';
+let selectedElement = getElem('Na');
+let animTime = 0;
+
+function addScore(pts) {
+  globalScore += pts;
+  document.getElementById('global-score').textContent = globalScore;
+  const rankEl = document.getElementById('rank-label');
+  if (globalScore >= 500) rankEl.textContent = 'الرتبة: عالم ذرة أسطوري 🌟';
+  else if (globalScore >= 300) rankEl.textContent = 'الرتبة: بروفيسور كيمياء 🔬';
+  else if (globalScore >= 150) rankEl.textContent = 'الرتبة: باحث ذري ⚛️';
+  else rankEl.textContent = 'الرتبة: متدرب كيميائي 🧪';
+}
+
+document.getElementById('btn-start-app').addEventListener('click', () => {
+  AudioEngine.init();
+  AudioEngine.victory();
+  document.getElementById('start-screen').classList.add('hidden');
+  document.getElementById('main-app').classList.remove('hidden');
+  buildPeriodicTable();
+  selectCourseElement(getElem('Na'));
+  initIonGame();
+  initBondGame();
+  initQuiz();
+});
+
+function switchTab(tab) {
+  AudioEngine.click();
+  activeTab = tab;
+  ['course', 'ionization', 'bonding', 'quiz'].forEach(t => {
+    document.getElementById('sec-' + t).classList.toggle('hidden', t !== tab);
+    const btn = document.getElementById('tab-' + t);
+    if (t === tab) {
+      btn.className = 'nav-tab px-3 py-2 rounded-xl text-xs sm:text-sm font-bold transition whitespace-nowrap bg-cyan-500/20 text-cyan-300 border border-cyan-400/60 shadow-sm shadow-cyan-500/20';
+    } else {
+      btn.className = 'nav-tab px-3 py-2 rounded-xl text-xs sm:text-sm font-bold transition whitespace-nowrap bg-slate-800/70 text-slate-300 border border-slate-700 hover:bg-slate-800';
+    }
+  });
+}
+
+// =========================================================================
+// 4. MODULE 1: PERIODIC TABLE & BOHR CANVAS
+// =========================================================================
+function buildPeriodicTable() {
+  const grid = document.getElementById('periodic-grid');
+  grid.innerHTML = '';
+  for (let r = 1; r <= 4; r++) {
+    for (let c = 1; c <= 8; c++) {
+      const el = ELEMENTS.find(e => e.row === r && e.col === c);
+      if (!el) {
+        const empty = document.createElement('div');
+        empty.className = 'rounded-xl border border-dashed border-slate-800/40 min-h-[54px] sm:min-h-[62px]';
+        grid.appendChild(empty);
+      } else {
+        const btn = document.createElement('button');
+        btn.id = 'pt-' + el.sym;
+        btn.className = `elem-btn cat-${el.cat} border rounded-xl p-1 sm:p-1.5 flex flex-col items-center justify-between min-h-[54px] sm:min-h-[62px] cursor-pointer text-white relative`;
+        btn.innerHTML = `
+          <span class="text-[9px] sm:text-[10px] text-slate-300 self-start leading-none font-bold">${el.z}</span>
+          <span class="text-sm sm:text-base font-black leading-none">${el.sym}</span>
+          <span class="text-[8px] sm:text-[9px] text-slate-200 truncate w-full text-center">${el.name}</span>
+        `;
+        btn.onclick = () => {
+          AudioEngine.click();
+          selectCourseElement(el);
+        };
+        grid.appendChild(btn);
+      }
+    }
+  }
+}
+
+function selectCourseElement(el) {
+  selectedElement = el;
+  document.querySelectorAll('.elem-btn').forEach(b => b.classList.remove('active'));
+  const activeBtn = document.getElementById('pt-' + el.sym);
+  if (activeBtn) activeBtn.classList.add('active');
+
+  document.getElementById('bohr-elem-symbol').textContent = el.sym;
+  document.getElementById('bohr-elem-name').textContent = el.name;
+  document.getElementById('bohr-elem-z').textContent = `Z = ${el.z}`;
+  document.getElementById('bohr-config').textContent = el.shells.join(', ');
+  document.getElementById('bohr-en').textContent = el.en > 0 ? el.en.toFixed(2) : 'غاز نبيل (0)';
+  document.getElementById('bohr-valence').textContent = `${el.shells[el.shells.length - 1]} إلكترون`;
+  document.getElementById('bohr-tendency').textContent = el.tendency;
+  document.getElementById('bohr-desc').textContent = el.desc;
+}
+
+// Shared Bohr Atom Drawer
+function drawBohrAtom(ctx, cx, cy, maxR, symbol, protons, shells, time, charge = 0, highlightOuter = true) {
+  const shellNames = ['K', 'L', 'M', 'N'];
+  const numShells = Math.max(1, shells.length);
+  const step = (maxR - 36) / 4;
+
+  // Glow behind nucleus
+  const grad = ctx.createRadialGradient(cx, cy, 4, cx, cy, 34);
+  if (charge > 0) {
+    grad.addColorStop(0, 'rgba(244, 63, 94, 0.9)');
+    grad.addColorStop(1, 'rgba(244, 63, 94, 0)');
+  } else if (charge < 0) {
+    grad.addColorStop(0, 'rgba(34, 211, 238, 0.9)');
+    grad.addColorStop(1, 'rgba(34, 211, 238, 0)');
+  } else {
+    grad.addColorStop(0, 'rgba(251, 191, 36, 0.85)');
+    grad.addColorStop(1, 'rgba(251, 191, 36, 0)');
+  }
+  ctx.fillStyle = grad;
+  ctx.beginPath();
+  ctx.arc(cx, cy, 34, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Draw shells & electrons
+  shells.forEach((count, idx) => {
+    const r = 36 + (idx + 1) * step;
+    const isOuter = (idx === shells.length - 1);
+
+    // Orbit ring
+    ctx.beginPath();
+    ctx.arc(cx, cy, r, 0, Math.PI * 2);
+    ctx.strokeStyle = (isOuter && highlightOuter) ? 'rgba(56, 189, 248, 0.55)' : 'rgba(148, 163, 184, 0.25)';
+    ctx.lineWidth = (isOuter && highlightOuter) ? 2 : 1.2;
+    ctx.stroke();
+
+    // Shell label (K, L, M, N)
+    ctx.fillStyle = 'rgba(148, 163, 184, 0.6)';
+    ctx.font = 'bold 10px Cairo';
+    ctx.textAlign = 'center';
+    ctx.fillText(shellNames[idx] || '', cx, cy - r + 12);
+
+    // Electrons
+    const speed = (idx % 2 === 0 ? 1 : -1) * (0.9 - idx * 0.14);
+    for (let i = 0; i < count; i++) {
+      const angle = (Math.PI * 2 * i) / count + time * speed;
+      const ex = cx + Math.cos(angle) * r;
+      const ey = cy + Math.sin(angle) * r;
+
+      ctx.beginPath();
+      ctx.arc(ex, ey, isOuter ? 6 : 4.8, 0, Math.PI * 2);
+      ctx.fillStyle = isOuter ? '#38bdf8' : '#94a3b8';
+      ctx.shadowColor = isOuter ? '#38bdf8' : 'transparent';
+      ctx.shadowBlur = isOuter ? 10 : 0;
+      ctx.fill();
+      ctx.shadowBlur = 0;
+
+      // minus sign inside outer electron
+      if (isOuter) {
+        ctx.fillStyle = '#020617';
+        ctx.font = 'bold 9px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('-', ex, ey + 0.5);
+      }
+    }
+  });
+
+  // Nucleus circle
+  ctx.beginPath();
+  ctx.arc(cx, cy, 22, 0, Math.PI * 2);
+  ctx.fillStyle = charge > 0 ? '#be123c' : (charge < 0 ? '#0369a1' : '#b45309');
+  ctx.fill();
+  ctx.lineWidth = 2;
+  ctx.strokeStyle = '#fde68a';
+  ctx.stroke();
+
+  // Nucleus Text
+  ctx.fillStyle = '#ffffff';
+  ctx.font = '900 14px Cairo';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  let chargeStr = '';
+  if (charge > 0) chargeStr = charge === 1 ? '⁺' : `${charge}⁺`;
+  if (charge < 0) chargeStr = charge === -1 ? '⁻' : `${Math.abs(charge)}⁻`;
+  ctx.fillText(symbol + chargeStr, cx, cy - 3);
+  ctx.font = '700 9px Cairo';
+  ctx.fillStyle = '#fef3c7';
+  ctx.fillText(`+${protons}p`, cx, cy + 10);
+}
+
+// =========================================================================
+// 5. MODULE 2: IONIZATION GAME
+// =========================================================================
+const ION_ROUNDS = [
+  { sym:'Na', targetE:10, charge:+1, noble:'النيون (Ne)' },
+  { sym:'Cl', targetE:18, charge:-1, noble:'الأرغون (Ar)' },
+  { sym:'Mg', targetE:10, charge:+2, noble:'النيون (Ne)' },
+  { sym:'O',  targetE:10, charge:-2, noble:'النيون (Ne)' },
+  { sym:'Li', targetE:2,  charge:+1, noble:'الهيليوم (He)' },
+  { sym:'F',  targetE:10, charge:-1, noble:'النيون (Ne)' },
+  { sym:'Al', targetE:10, charge:+3, noble:'النيون (Ne)' },
+  { sym:'S',  targetE:18, charge:-2, noble:'الأرغون (Ar)' }
+];
+
+let ionState = {
+  idx: 0,
+  hearts: 3,
+  currentE: 11,
+  locked: false,
+  particles: []
+};
+
+function initIonGame() {
+  ionState.idx = 0;
+  ionState.hearts = 3;
+  ionState.locked = false;
+  loadIonRound();
+}
+
+function loadIonRound() {
+  const round = ION_ROUNDS[ionState.idx];
+  const el = getElem(round.sym);
+  ionState.currentE = el.z;
+  ionState.locked = false;
+
+  document.getElementById('ion-round').textContent = ionState.idx + 1;
+  document.getElementById('ion-hearts').textContent = '❤️'.repeat(ionState.hearts) + '🖤'.repeat(3 - ionState.hearts);
+  document.getElementById('ion-target-name').textContent = `${el.name} (${el.sym})`;
+  document.getElementById('ion-feedback').classList.add('hidden');
+  document.getElementById('btn-check-ion').disabled = false;
+  updateIonUI();
+}
+
+function modifyIonElectrons(delta) {
+  if (ionState.locked) return;
+  const next = ionState.currentE + delta;
+  if (next < 1 || next > 20) return;
+  ionState.currentE = next;
+  if (delta > 0) AudioEngine.electronAdd(); else AudioEngine.electronRemove();
+
+  // Spawn visual spark
+  ionState.particles.push({
+    x: 165, y: 165,
+    r: delta > 0 ? 140 : 40,
+    targetR: delta > 0 ? 50 : 160,
+    color: delta > 0 ? '#22d3ee' : '#fb7185',
+    alpha: 1
+  });
+  updateIonUI();
+}
+
+function updateIonUI() {
+  const round = ION_ROUNDS[ionState.idx];
+  const el = getElem(round.sym);
+  const charge = el.z - ionState.currentE;
+  const shells = computeShells(ionState.currentE);
+
+  document.getElementById('ion-protons').textContent = el.z;
+  document.getElementById('ion-electrons').textContent = ionState.currentE;
+  document.getElementById('ion-charge').textContent = charge > 0 ? `+${charge}` : `${charge}`;
+  document.getElementById('ion-current-config').textContent = shells.join(', ');
+
+  const badge = document.getElementById('ion-badge');
+  if (charge === 0) {
+    badge.textContent = 'ذرة متعادلة (0)';
+    badge.className = 'px-3 py-1 rounded-full text-xs font-black bg-slate-800 text-slate-300 border border-slate-600';
+  } else if (charge > 0) {
+    badge.textContent = `كاتيون موجب (${el.sym}${charge === 1 ? '⁺' : charge + '⁺'})`;
+    badge.className = 'px-3 py-1 rounded-full text-xs font-black bg-rose-500/20 text-rose-300 border border-rose-500/50';
+  } else {
+    badge.textContent = `أنيون سالب (${el.sym}${charge === -1 ? '⁻' : Math.abs(charge) + '⁻'})`;
+    badge.className = 'px-3 py-1 rounded-full text-xs font-black bg-cyan-500/20 text-cyan-300 border border-cyan-500/50';
+  }
+}
+
+function checkIonStability() {
+  if (ionState.locked) return;
+  const round = ION_ROUNDS[ionState.idx];
+  const el = getElem(round.sym);
+  const fb = document.getElementById('ion-feedback');
+  fb.classList.remove('hidden');
+
+  if (ionState.currentE === round.targetE) {
+    AudioEngine.correct();
+    ionState.locked = true;
+    addScore(30);
+    const typeName = round.charge > 0 ? 'كاتيون (أيون موجب)' : 'أنيون (أيون سالب)';
+    const actionText = round.charge > 0 ? `فقدت ${round.charge} إلكترون` : `اكتسبت ${Math.abs(round.charge)} إلكترون`;
+    fb.className = 'rounded-xl p-4 text-sm font-bold leading-relaxed bg-emerald-500/20 border border-emerald-500/50 text-emerald-200 pop-in';
+    fb.innerHTML = `✅ رائع! أصبحت ذرة ${el.name} مستقرة بعد أن ${actionText} وتحولت إلى <strong>${typeName}</strong> بتوزيع إلكتروني مطابق لغاز ${round.noble}! (+30 نقطة)`;
+
+    setTimeout(() => {
+      ionState.idx++;
+      if (ionState.idx >= ION_ROUNDS.length) {
+        showResultModal('⚡ بطل التأين!', 'لقد نجحت في تحويل جميع الذرات إلى أيونات مستقرة وفق قاعدة الثمانية!', () => initIonGame());
+      } else {
+        loadIonRound();
+      }
+    }, 2000);
+  } else {
+    AudioEngine.wrong();
+    ionState.hearts--;
+    document.getElementById('ion-hearts').textContent = '❤️'.repeat(Math.max(0, ionState.hearts)) + '🖤'.repeat(Math.max(0, 3 - ionState.hearts));
+    fb.className = 'rounded-xl p-4 text-sm font-bold leading-relaxed bg-rose-500/20 border border-rose-500/50 text-rose-200 shake';
+    fb.innerHTML = `❌ غير مستقر بعد! تذكر: ذرة ${el.name} تمتلك ${el.shells[el.shells.length - 1]} إلكترونات في مدارها الأخير، وتحتاج للوصول إلى التوزيع المستقر لغاز ${round.noble}.`;
+
+    if (ionState.hearts <= 0) {
+      ionState.locked = true;
+      setTimeout(() => {
+        showResultModal('💔 انتهت المحاولات', 'لا بأس! راجع التوزيع الإلكتروني في الجدول الدوري وحاول مجدداً.', () => initIonGame(), false);
+      }, 1100);
+    }
+  }
+}
+
+// =========================================================================
+// 6. MODULE 3: BONDING GAME & PAULING ELECTRONEGATIVITY
+// =========================================================================
+const BOND_CHALLENGES = [
+  { a1:'Na', a2:'Cl', formula:'NaCl', name:'كلوريد الصوديوم (ملح الطعام)' },
+  { a1:'H',  a2:'H',  formula:'H₂',   name:'جزيء الهيدروجين' },
+  { a1:'H',  a2:'Cl', formula:'HCl',  name:'كلوريد الهيدروجين' },
+  { a1:'Mg', a2:'O',  formula:'MgO',  name:'أكسيد المغنيسيوم' },
+  { a1:'C',  a2:'H',  formula:'C-H',  name:'رابطة الكربون والهيدروجين (الميثان)' },
+  { a1:'K',  a2:'F',  formula:'KF',   name:'فلوريد البوتاسيوم' },
+  { a1:'O',  a2:'H',  formula:'O-H',  name:'رابطة الماء القطبية' },
+  { a1:'Cl', a2:'Cl', formula:'Cl₂',  name:'جزيء الكلور' }
+];
+
+let bondState = {
+  mode: 'challenge', // 'challenge' | 'sandbox'
+  idx: 0,
+  e1: getElem('Na'),
+  e2: getElem('Cl'),
+  delta: 2.23,
+  bondType: 'ionic', // 'ionic' | 'polar' | 'nonpolar'
+  animProgress: 0, // 0 to 1
+  animating: false,
+  answered: false
+};
+
+function classifyBond(delta) {
+  if (delta >= 1.7) return 'ionic';
+  if (delta > 0.4) return 'polar';
+  return 'nonpolar';
+}
+
+function initBondGame() {
+  // Populate sandbox dropdowns (non-noble elements)
+  const reactive = ELEMENTS.filter(e => e.cat !== 'noble');
+  const s1 = document.getElementById('sandbox-atom1');
+  const s2 = document.getElementById('sandbox-atom2');
+  s1.innerHTML = ''; s2.innerHTML = '';
+  reactive.forEach(e => {
+    const opt1 = new Option(`${e.sym} - ${e.name} (EN: ${e.en})`, e.sym);
+    const opt2 = new Option(`${e.sym} - ${e.name} (EN: ${e.en})`, e.sym);
+    s1.add(opt1); s2.add(opt2);
+  });
+  s1.value = 'Na';
+  s2.value = 'Cl';
+
+  bondState.idx = 0;
+  setBondMode('challenge');
+}
+
+function setBondMode(mode) {
+  AudioEngine.click();
+  bondState.mode = mode;
+  const btnCh = document.getElementById('btn-bond-challenge');
+  const btnSb = document.getElementById('btn-bond-sandbox');
+
+  if (mode === 'challenge') {
+    btnCh.className = 'px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold bg-emerald-500 text-slate-950 cursor-pointer';
+    btnSb.className = 'px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold bg-slate-800 text-slate-300 border border-slate-700 cursor-pointer';
+    document.getElementById('bond-sandbox-controls').classList.add('hidden');
+    document.getElementById('bond-round-box').classList.remove('hidden');
+    document.getElementById('bond-choice-buttons').classList.remove('hidden');
+    document.getElementById('bond-question-title').textContent = 'ما نوع الرابطة المتكونة بين هاتين الذرتين؟';
+    loadBondChallenge();
+  } else {
+    btnSb.className = 'px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold bg-emerald-500 text-slate-950 cursor-pointer';
+    btnCh.className = 'px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold bg-slate-800 text-slate-300 border border-slate-700 cursor-pointer';
+    document.getElementById('bond-sandbox-controls').classList.remove('hidden');
+    document.getElementById('bond-round-box').classList.add('hidden');
+    document.getElementById('bond-choice-buttons').classList.add('hidden');
+    document.getElementById('btn-next-bond').classList.add('hidden');
+    document.getElementById('bond-question-title').textContent = 'تحليل مقياس بولينغ التلقائي:';
+    updateSandboxBond();
+  }
+}
+
+function loadBondPair(sym1, sym2, customTitle = null) {
+  const e1 = getElem(sym1);
+  const e2 = getElem(sym2);
+  bondState.e1 = e1;
+  bondState.e2 = e2;
+  bondState.delta = Math.abs(e1.en - e2.en);
+  bondState.bondType = classifyBond(bondState.delta);
+  bondState.animProgress = 0;
+  bondState.animating = false;
+  bondState.answered = false;
+
+  document.getElementById('bond-pair-title').textContent = customTitle || `${e1.sym} + ${e2.sym}`;
+  document.getElementById('bond-sym1').textContent = e1.sym;
+  document.getElementById('bond-sym2').textContent = e2.sym;
+  document.getElementById('bond-en1').textContent = e1.en.toFixed(2);
+  document.getElementById('bond-en2').textContent = e2.en.toFixed(2);
+  document.getElementById('bond-delta').textContent = bondState.delta.toFixed(2);
+
+  // Move Pauling Needle (scale 0 to 3.3+)
+  const pct = Math.min(98, (bondState.delta / 3.3) * 100);
+  document.getElementById('pauling-needle').style.left = pct + '%';
+}
+
+function loadBondChallenge() {
+  const ch = BOND_CHALLENGES[bondState.idx];
+  document.getElementById('bond-round').textContent = bondState.idx + 1;
+  document.getElementById('bond-feedback').classList.add('hidden');
+  document.getElementById('btn-next-bond').classList.add('hidden');
+  loadBondPair(ch.a1, ch.a2, `${ch.a1} + ${ch.a2} (${ch.formula})`);
+}
+
+function updateSandboxBond() {
+  const s1 = document.getElementById('sandbox-atom1').value;
+  const s2 = document.getElementById('sandbox-atom2').value;
+  loadBondPair(s1, s2);
+  showBondExplanation(true);
+  triggerBondAnimation();
+}
+
+function triggerBondAnimation() {
+  AudioEngine.bond();
+  bondState.animProgress = 0;
+  bondState.animating = true;
+}
+
+function answerBondChallenge(choice) {
+  if (bondState.answered) return;
+  bondState.answered = true;
+  const isCorrect = (choice === bondState.bondType);
+  if (isCorrect) {
+    AudioEngine.correct();
+    addScore(35);
+  } else {
+    AudioEngine.wrong();
+  }
+  triggerBondAnimation();
+  showBondExplanation(isCorrect);
+  document.getElementById('btn-next-bond').classList.remove('hidden');
+}
+
+function showBondExplanation(isCorrect) {
+  const fb = document.getElementById('bond-feedback');
+  fb.classList.remove('hidden');
+  const d = bondState.delta.toFixed(2);
+  const { e1, e2, bondType } = bondState;
+
+  let desc = '';
+  if (bondType === 'ionic') {
+    const donor = e1.en < e2.en ? e1 : e2;
+    const acceptor = e1.en < e2.en ? e2 : e1;
+    desc = `لأن فرق السالبية الكهربائية <strong>ΔEN = ${d}</strong> (أكبر من أو يساوي 1.7)، تقوم ذرة <strong>${acceptor.name}</strong> ذات السالبية العالية بانتزاع إلكترون من <strong>${donor.name}</strong> فتتشكل <strong>رابطة أيونية</strong> وتجاذب كهربائي بين أيون موجب وسالب!`;
+  } else if (bondType === 'polar') {
+    const stronger = e1.en > e2.en ? e1 : e2;
+    desc = `لأن <strong>ΔEN = ${d}</strong> (محصور بين 0.4 و 1.7)، تتشارك الذرتان الإلكترونات في <strong>رابطة تساهمية قطبية</strong>، لكن ذرة <strong>${stronger.name}</strong> تجذب الزوج الإلكتروني نحوها بقوة أكبر.`;
+  } else {
+    desc = `لأن <strong>ΔEN = ${d}</strong> (أقل من أو يساوي 0.4)، تتقاسم الذرتان الإلكترونات بالتساوي تماماً في <strong>رابطة تساهمية غير قطبية</strong>!`;
+  }
+
+  if (bondState.mode === 'sandbox') {
+    fb.className = 'rounded-xl p-4 text-sm leading-relaxed bg-slate-900/90 border border-emerald-500/40 text-slate-200';
+    fb.innerHTML = `🔬 <strong>النتيجة:</strong> ${desc}`;
+  } else if (isCorrect) {
+    fb.className = 'rounded-xl p-4 text-sm leading-relaxed bg-emerald-500/20 border border-emerald-500/50 text-emerald-100 pop-in';
+    fb.innerHTML = `✅ <strong>إجابة صحيحة! (+35 نقطة)</strong><br>${desc}`;
+  } else {
+    fb.className = 'rounded-xl p-4 text-sm leading-relaxed bg-rose-500/20 border border-rose-500/50 text-rose-100 shake';
+    fb.innerHTML = `❌ <strong>إجابة خاطئة!</strong><br>${desc}`;
+  }
+}
+
+function nextBondRound() {
+  AudioEngine.click();
+  bondState.idx++;
+  if (bondState.idx >= BOND_CHALLENGES.length) {
+    showResultModal('🔗 خبير الروابط الكيميائية!', 'أحسنت! لقد أتقنت استخدام مقياس بولينغ للتمييز بين الروابط الأيونية والتساهمية.', () => {
+      bondState.idx = 0;
+      loadBondChallenge();
+    });
+  } else {
+    loadBondChallenge();
+  }
+}
+
+// =========================================================================
+// 7. MODULE 4: COMPREHENSIVE QUIZ
+// =========================================================================
+const QUIZ_QUESTIONS = [
+  {
+    tag: 'نموذج بور',
+    q: 'ما هو أقصى عدد من الإلكترونات يستوعبه مستوى الطاقة الأول (المدار K) وفق نموذج بور؟',
+    opts: ['2 إلكترون', '8 إلكترونات', '18 إلكتروناً', '4 إلكترونات'],
+    ans: 0,
+    exp: 'وفق العلاقة 2n² في نموذج بور، المستوى الأول (n=1) يتسع لـ 2(1)² = 2 إلكترون فقط.'
+  },
+  {
+    tag: 'الجدول الدوري',
+    q: 'التوزيع الإلكتروني لذرة الصوديوم (Z = 11) وفق نموذج بور هو:',
+    opts: ['2, 9', '2, 8, 1', '2, 7, 2', '8, 2, 1'],
+    ans: 1,
+    exp: 'يمتلئ المدار K بـ 2، ثم المدار L بـ 8، ويبقى إلكترون واحد في المدار الثالث M فيصبح التوزيع (2, 8, 1).'
+  },
+  {
+    tag: 'الجدول الدوري',
+    q: 'لماذا تُسمى عناصر المجموعة الثامنة (8A) مثل النيون والأرغون بالغازات النبيلة الخاملة؟',
+    opts: ['لأن سالبيتها الكهربائية عالية جداً', 'لأن مدارها الأخير ممتلئ ومستقر بالإلكترونات', 'لأنها تفقد الإلكترونات بسرعة', 'لأنها لا تحتوي على بروتونات'],
+    ans: 1,
+    exp: 'الغازات النبيلة تحقق قاعدة الثمانية (8 إلكترونات في المدار الأخير، أو 2 للهيليوم) لذا هي مستقرة كيميائياً.'
+  },
+  {
+    tag: 'تأين الذرات',
+    q: 'عندما تفقد ذرة المغنيسيوم (Mg، توزيعها 2, 8, 2) إلكترونين لتستقر، فإنها تتحول إلى:',
+    opts: ['أنيون سالب (Mg²⁻)', 'كاتيون موجب (Mg²⁺)', 'ذرة متعادلة', 'غاز نبيل'],
+    ans: 1,
+    exp: 'فقدان الإلكترونات السالبة يجعل عدد البروتونات الموجبة أكبر بـ 2، فتتحول الذرة إلى كاتيون موجب (Mg²⁺).'
+  },
+  {
+    tag: 'تأين الذرات',
+    q: 'ما نوع الأيون الذي تكوّنه ذرة الكلور (Cl، توزيعها 2, 8, 7) عند وصولها للاستقرار؟',
+    opts: ['كاتيون (Cl⁺)', 'أنيون (Cl⁻)', 'كاتيون (Cl⁷⁺)', 'أنيون (Cl²⁻)'],
+    ans: 1,
+    exp: 'يمتلك الكلور 7 إلكترونات تكافؤ، لذا يكتسب إلكتروناً واحداً ليصبح 8 فيتحول إلى أنيون سالب (Cl⁻).'
+  },
+  {
+    tag: 'مقياس بولينغ',
+    q: 'أي عنصر في الجدول الدوري يمتلك أعلى سالبية كهربائية في مقياس بولينغ (EN = 3.98)؟',
+    opts: ['الأكسجين (O)', 'الصوديوم (Na)', 'الفلور (F)', 'الكلور (Cl)'],
+    ans: 2,
+    exp: 'الفلور (F) هو العنصر الأكثر جذباً للإلكترونات في الجدول الدوري بسالبية كهربائية تبلغ 3.98 على مقياس بولينغ.'
+  },
+  {
+    tag: 'مقياس بولينغ والروابط',
+    q: 'وفق مقياس بولينغ، متى تُصنّف الرابطة الكيميائية بين ذرتين على أنها "رابطة أيونية"؟',
+    opts: ['عندما يكون فرق السالبية ΔEN = 0', 'عندما يكون ΔEN أقل من 0.4', 'عندما يكون ΔEN أكبر من أو يساوي 1.7', 'بين ذرتين متماثلتين دائماً'],
+    ans: 2,
+    exp: 'إذا كان فرق السالبية الكهربائية لبولينغ ΔEN ≥ 1.7، فإن الذرة الأقوى تنتزع الإلكترون وتتشكل رابطة أيونية.'
+  },
+  {
+    tag: 'الرابطة الأيونية',
+    q: 'إذا كانت سالبية البوتاسيوم (K = 0.82) وسالبية الفلور (F = 3.98)، فما نوع الرابطة في KF؟',
+    opts: ['رابطة أيونية', 'رابطة تساهمية غير قطبية', 'رابطة تساهمية قطبية', 'لا تتكون رابطة'],
+    ans: 0,
+    exp: 'فرق السالبية ΔEN = |3.98 - 0.82| = 3.16 وهو أكبر بكثير من 1.7، إذن الرابطة أيونية قوية.'
+  },
+  {
+    tag: 'الرابطة التساهمية',
+    q: 'ما نوع الرابطة في جزيء الكلور (Cl₂) حيث تتحد ذرتا كلور متماثلتان (EN = 3.16)؟',
+    opts: ['رابطة أيونية', 'رابطة تساهمية غير قطبية', 'رابطة تساهمية قطبية', 'رابطة فلزية'],
+    ans: 1,
+    exp: 'لأن الذرتين متماثلتان، فإن ΔEN = 3.16 - 3.16 = 0، فتتشاركان الإلكترونات بالتساوي في رابطة تساهمية غير قطبية.'
+  },
+  {
+    tag: 'الرابطة التساهمية القطبية',
+    q: 'في جزيء كلوريد الهيدروجين (HCl)، سالبية الهيدروجين 2.20 والكلور 3.16 (ΔEN = 0.96). ما نوع الرابطة؟',
+    opts: ['رابطة أيونية', 'رابطة تساهمية قطبية', 'رابطة تساهمية غير قطبية', 'رابطة نبيلة'],
+    ans: 1,
+    exp: 'لأن فرق السالبية ΔEN = 0.96 محصور بين 0.4 و 1.7، فإن الرابطة تساهمية قطبية تنجذب فيها الإلكترونات أكثر نحو الكلور.'
+  }
+];
+
+let quizState = {
+  idx: 0,
+  hearts: 3,
+  correctCount: 0,
+  streak: 0,
+  answered: false
+};
+
+function initQuiz() {
+  quizState = { idx: 0, hearts: 3, correctCount: 0, streak: 0, answered: false };
+  renderQuizQuestion();
+}
+
+function renderQuizQuestion() {
+  const q = QUIZ_QUESTIONS[quizState.idx];
+  quizState.answered = false;
+
+  document.getElementById('quiz-hearts').textContent = '❤️'.repeat(quizState.hearts) + '🖤'.repeat(3 - quizState.hearts);
+  document.getElementById('quiz-progress').textContent = `${quizState.idx + 1} / ${QUIZ_QUESTIONS.length}`;
+  document.getElementById('quiz-bar').style.width = `${((quizState.idx + 1) / QUIZ_QUESTIONS.length) * 100}%`;
+  document.getElementById('quiz-tag').textContent = q.tag;
+  document.getElementById('quiz-question').textContent = q.q;
+
+  const streakEl = document.getElementById('quiz-streak');
+  if (quizState.streak >= 2) {
+    streakEl.textContent = `🔥 سلسلة إجابات: ${quizState.streak}`;
+    streakEl.classList.remove('hidden');
+  } else {
+    streakEl.classList.add('hidden');
+  }
+
+  const optsEl = document.getElementById('quiz-options');
+  optsEl.innerHTML = '';
+  q.opts.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'w-full text-right p-4 rounded-xl bg-slate-900/80 hover:bg-slate-800 border border-slate-700 text-slate-100 font-bold text-sm sm:text-base transition cursor-pointer flex items-center gap-3';
+    btn.innerHTML = `<span class="w-7 h-7 rounded-lg bg-slate-800 border border-slate-600 flex items-center justify-center text-xs text-cyan-300 shrink-0">${i + 1}</span><span>${opt}</span>`;
+    btn.onclick = () => selectQuizOption(i, btn);
+    optsEl.appendChild(btn);
+  });
+
+  document.getElementById('quiz-explanation').classList.add('hidden');
+  document.getElementById('btn-quiz-next').classList.add('hidden');
+}
+
+function selectQuizOption(idx, btnEl) {
+  if (quizState.answered) return;
+  quizState.answered = true;
+  const q = QUIZ_QUESTIONS[quizState.idx];
+  const allBtns = document.getElementById('quiz-options').children;
+
+  const expEl = document.getElementById('quiz-explanation');
+  expEl.classList.remove('hidden');
+
+  if (idx === q.ans) {
+    AudioEngine.correct();
+    quizState.correctCount++;
+    quizState.streak++;
+    const bonus = quizState.streak >= 3 ? 10 : 0;
+    addScore(25 + bonus);
+    btnEl.className = 'w-full text-right p-4 rounded-xl bg-emerald-500/25 border-2 border-emerald-400 text-emerald-100 font-bold text-sm sm:text-base flex items-center gap-3';
+    expEl.className = 'rounded-xl p-4 text-sm leading-relaxed border bg-emerald-500/15 border-emerald-500/50 text-emerald-200 pop-in';
+    expEl.innerHTML = `✅ <strong>إجابة ممتازة! (+${25 + bonus} نقطة)</strong><br>${q.exp}`;
+  } else {
+    AudioEngine.wrong();
+    quizState.hearts--;
+    quizState.streak = 0;
+    document.getElementById('quiz-hearts').textContent = '❤️'.repeat(Math.max(0, quizState.hearts)) + '🖤'.repeat(Math.max(0, 3 - quizState.hearts));
+    btnEl.className = 'w-full text-right p-4 rounded-xl bg-rose-500/25 border-2 border-rose-500 text-rose-100 font-bold text-sm sm:text-base flex items-center gap-3 shake';
+    allBtns[q.ans].className = 'w-full text-right p-4 rounded-xl bg-emerald-500/20 border-2 border-emerald-400 text-emerald-100 font-bold text-sm sm:text-base flex items-center gap-3';
+    expEl.className = 'rounded-xl p-4 text-sm leading-relaxed border bg-rose-500/15 border-rose-500/50 text-rose-200';
+    expEl.innerHTML = `❌ <strong>إجابة غير صحيحة!</strong><br>${q.exp}`;
+  }
+
+  if (quizState.hearts <= 0) {
+    setTimeout(() => {
+      showResultModal('💔 انتهت المحاولات في الاختبار', `أجبت بشكل صحيح عن ${quizState.correctCount} أسئلة. راجع الدروس التفاعلية وجرب مرة أخرى!`, () => initQuiz(), false);
+    }, 1200);
+  } else {
+    const nextBtn = document.getElementById('btn-quiz-next');
+    nextBtn.textContent = quizState.idx === QUIZ_QUESTIONS.length - 1 ? 'عرض النتيجة النهائية 🏆' : 'السؤال التالي ←';
+    nextBtn.classList.remove('hidden');
+  }
+}
+
+function nextQuizQuestion() {
+  AudioEngine.click();
+  quizState.idx++;
+  if (quizState.idx >= QUIZ_QUESTIONS.length) {
+    showResultModal('🏆 تهانينا! أتممت الاختبار النهائي', `لقد أجبت بشكل صحيح عن ${quizState.correctCount} من أصل ${QUIZ_QUESTIONS.length} أسئلة!`, () => initQuiz(), true);
+  } else {
+    renderQuizQuestion();
+  }
+}
+
+// =========================================================================
+// 8. RESULT MODAL (GAME OVER / VICTORY)
+// =========================================================================
+function showResultModal(title, subtitle, onRetry, isWin = true) {
+  if (isWin) AudioEngine.victory(); else AudioEngine.wrong();
+  document.getElementById('modal-icon').textContent = isWin ? '🏆' : '🧪';
+  document.getElementById('modal-title').textContent = title;
+  document.getElementById('modal-subtitle').textContent = subtitle;
+  document.getElementById('modal-score').textContent = globalScore;
+  document.getElementById('modal-grade').textContent = globalScore >= 400 ? 'عبقري ذرة 🌟' : (globalScore >= 200 ? 'ممتاز ⚛️' : 'جيد جداً 👍');
+
+  const retryBtn = document.getElementById('modal-btn-retry');
+  retryBtn.onclick = () => {
+    closeResultModal();
+    onRetry();
+  };
+  document.getElementById('result-modal').classList.remove('hidden');
+}
+
+function closeResultModal() {
+  AudioEngine.click();
+  document.getElementById('result-modal').classList.add('hidden');
+}
+
+// =========================================================================
+// 9. MASTER ANIMATION LOOP (60 FPS CANVASES)
+// =========================================================================
+function renderBondCanvas(time) {
+  const canvas = document.getElementById('bond-canvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const w = canvas.width, h = canvas.height;
+  ctx.clearRect(0, 0, w, h);
+
+  // Subtle grid background
+  ctx.strokeStyle = 'rgba(56, 189, 248, 0.06)';
+  ctx.lineWidth = 1;
+  for (let x = 0; x < w; x += 28) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, h); ctx.stroke(); }
+  for (let y = 0; y < h; y += 28) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke(); }
+
+  if (bondState.animating && bondState.animProgress < 1) {
+    bondState.animProgress = Math.min(1, bondState.animProgress + 0.018);
+  }
+  const p = bondState.animProgress;
+  // Ease out cubic
+  const ease = 1 - Math.pow(1 - p, 3);
+
+  const { e1, e2, bondType } = bondState;
+
+  // Positions of the two atoms
+  const baseDist = 145;
+  const targetDist = bondType === 'ionic' ? 92 : 66;
+  const dist = baseDist - (baseDist - targetDist) * ease;
+  const x1 = w / 2 - dist;
+  const x2 = w / 2 + dist;
+  const cy = h / 2;
+  const outerR = 72;
+
+  // Draw bond glow if formed
+  if (p > 0.6) {
+    const glowAlpha = (p - 0.6) / 0.4;
+    ctx.save();
+    ctx.globalAlpha = glowAlpha * 0.5;
+    const midX = w / 2;
+    const g = ctx.createRadialGradient(midX, cy, 8, midX, cy, 95);
+    if (bondType === 'ionic') {
+      g.addColorStop(0, 'rgba(245, 158, 11, 0.7)');
+      g.addColorStop(1, 'rgba(245, 158, 11, 0)');
+    } else if (bondType === 'polar') {
+      g.addColorStop(0, 'rgba(168, 85, 247, 0.7)');
+      g.addColorStop(1, 'rgba(168, 85, 247, 0)');
+    } else {
+      g.addColorStop(0, 'rgba(34, 211, 238, 0.7)');
+      g.addColorStop(1, 'rgba(34, 211, 238, 0)');
+    }
+    ctx.fillStyle = g;
+    ctx.beginPath();
+    ctx.arc(midX, cy, 95, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+  }
+
+  // Helper to draw simplified valence shell atom
+  function drawValenceAtom(x, y, el, color, chargeTxt, valenceCount) {
+    // Outer valence ring
+    ctx.beginPath();
+    ctx.arc(x, y, outerR, 0, Math.PI * 2);
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 2.2;
+    ctx.setLineDash(bondType === 'ionic' && p > 0.8 ? [] : [6, 4]);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Inner core
+    ctx.beginPath();
+    ctx.arc(x, y, 28, 0, Math.PI * 2);
+    ctx.fillStyle = '#0f172a';
+    ctx.fill();
+    ctx.lineWidth = 2.5;
+    ctx.strokeStyle = color;
+    ctx.stroke();
+
+    // Symbol
+    ctx.fillStyle = '#ffffff';
+    ctx.font = '900 18px Cairo';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(el.sym + chargeTxt, x, y - 3);
+    ctx.font = '700 10px Cairo';
+    ctx.fillStyle = '#94a3b8';
+    ctx.fillText(`EN: ${el.en}`, x, y + 14);
+
+    // Non-bonding valence electrons
+    for (let i = 0; i < valenceCount; i++) {
+      const ang = (Math.PI * 2 * i) / Math.max(1, valenceCount) + time * 0.7;
+      const ex = x + Math.cos(ang) * outerR;
+      const ey = y + Math.sin(ang) * outerR;
+      ctx.beginPath();
+      ctx.arc(ex, ey, 5.5, 0, Math.PI * 2);
+      ctx.fillStyle = color;
+      ctx.fill();
+    }
+  }
+
+  const v1 = e1.shells[e1.shells.length - 1];
+  const v2 = e2.shells[e2.shells.length - 1];
+
+  if (bondType === 'ionic') {
+    const e1IsDonor = e1.en < e2.en;
+    const c1 = p > 0.75 ? (e1IsDonor ? '⁺' : '⁻') : '';
+    const c2 = p > 0.75 ? (e1IsDonor ? '⁻' : '⁺') : '';
+    drawValenceAtom(x1, cy, e1, '#38bdf8', c1, Math.max(0, v1 - (e1IsDonor ? 1 : 0)));
+    drawValenceAtom(x2, cy, e2, '#f59e0b', c2, Math.max(0, v2 - (!e1IsDonor ? 1 : 0)));
+
+    // Flying transferred electron!
+    const startX = e1IsDonor ? x1 + outerR : x2 - outerR;
+    const endX = e1IsDonor ? x2 - outerR : x1 + outerR;
+    const ex = startX + (endX - startX) * ease;
+    const ey = cy - Math.sin(ease * Math.PI) * 55;
+
+    ctx.beginPath();
+    ctx.arc(ex, ey, 8, 0, Math.PI * 2);
+    ctx.fillStyle = '#fde047';
+    ctx.shadowColor = '#fde047';
+    ctx.shadowBlur = 16;
+    ctx.fill();
+    ctx.shadowBlur = 0;
+    ctx.fillStyle = '#020617';
+    ctx.font = 'bold 11px sans-serif';
+    ctx.fillText('e⁻', ex, ey + 0.5);
+
+    if (p > 0.85) {
+      ctx.fillStyle = '#fde68a';
+      ctx.font = 'bold 13px Cairo';
+      ctx.fillText('⚡ انتقال إلكتروني (رابطة أيونية)', w / 2, h - 22);
+    }
+  } else {
+    // Covalent (Polar or Non-polar)
+    const c1 = (bondType === 'polar' && p > 0.7) ? (e1.en > e2.en ? ' δ⁻' : ' δ⁺') : '';
+    const c2 = (bondType === 'polar' && p > 0.7) ? (e2.en > e1.en ? ' δ⁻' : ' δ⁺') : '';
+    drawValenceAtom(x1, cy, e1, '#38bdf8', c1, Math.max(0, v1 - 1));
+    drawValenceAtom(x2, cy, e2, '#a855f7', c2, Math.max(0, v2 - 1));
+
+    // Shared electron pair in the overlap zone
+    let pull = 0;
+    if (bondType === 'polar') {
+      pull = (e2.en > e1.en ? 1 : -1) * 18 * ease;
+    }
+    const shareX = w / 2 + pull;
+    const oscY = Math.sin(time * 3.2) * 14;
+
+    // Two shared electrons
+    [cy - oscY, cy + oscY].forEach((ey, idx) => {
+      ctx.beginPath();
+      ctx.arc(shareX + (idx === 0 ? -5 : 5), ey, 7, 0, Math.PI * 2);
+      ctx.fillStyle = '#34d399';
+      ctx.shadowColor = '#34d399';
+      ctx.shadowBlur = 14;
+      ctx.fill();
+      ctx.shadowBlur = 0;
+    });
+
+    if (p > 0.85) {
+      ctx.fillStyle = bondType === 'polar' ? '#d8b4fe' : '#67e8f9';
+      ctx.font = 'bold 13px Cairo';
+      ctx.fillText(
+        bondType === 'polar' ? '🧲 مشاركة غير متساوية (تساهمية قطبية)' : '🤝 مشاركة متساوية (تساهمية غير قطبية)',
+        w / 2, h - 22
+      );
+    }
+  }
+}
+
+function animateAll() {
+  animTime += 0.02;
+
+  // 1. Background start screen atom
+  const bgCanvas = document.getElementById('bg-atom-canvas');
+  if (bgCanvas && !document.getElementById('start-screen').classList.contains('hidden')) {
+    if (bgCanvas.width !== window.innerWidth || bgCanvas.height !== window.innerHeight) {
+      bgCanvas.width = window.innerWidth;
+      bgCanvas.height = window.innerHeight;
+    }
+    const bctx = bgCanvas.getContext('2d');
+    bctx.clearRect(0, 0, bgCanvas.width, bgCanvas.height);
+    drawBohrAtom(bctx, bgCanvas.width / 2, bgCanvas.height / 2, Math.min(bgCanvas.width, bgCanvas.height) * 0.4, '⚛', 11, [2, 8, 8, 2], animTime * 0.5, 0, true);
+  }
+
+  // 2. Course Bohr Canvas
+  if (activeTab === 'course') {
+    const c = document.getElementById('bohr-canvas');
+    if (c) {
+      const ctx = c.getContext('2d');
+      ctx.clearRect(0, 0, c.width, c.height);
+      drawBohrAtom(ctx, c.width / 2, c.height / 2, 152, selectedElement.sym, selectedElement.z, selectedElement.shells, animTime, 0, true);
+    }
+  }
+
+  // 3. Ionization Canvas
+  if (activeTab === 'ionization') {
+    const c = document.getElementById('ion-canvas');
+    if (c) {
+      const ctx = c.getContext('2d');
+      ctx.clearRect(0, 0, c.width, c.height);
+      const round = ION_ROUNDS[ionState.idx];
+      if (round) {
+        const el = getElem(round.sym);
+        const shells = computeShells(ionState.currentE);
+        const charge = el.z - ionState.currentE;
+        drawBohrAtom(ctx, c.width / 2, c.height / 2, 156, el.sym, el.z, shells, animTime, charge, true);
+
+        // Draw spark ripples
+        for (let i = ionState.particles.length - 1; i >= 0; i--) {
+          const pt = ionState.particles[i];
+          pt.r += (pt.targetR - pt.r) * 0.12;
+          pt.alpha -= 0.04;
+          if (pt.alpha <= 0) { ionState.particles.splice(i, 1); continue; }
+          ctx.beginPath();
+          ctx.arc(pt.x, pt.y, pt.r, 0, Math.PI * 2);
+          ctx.strokeStyle = pt.color;
+          ctx.globalAlpha = pt.alpha;
+          ctx.lineWidth = 3;
+          ctx.stroke();
+          ctx.globalAlpha = 1;
+        }
+      }
+    }
+  }
+
+  // 4. Bonding Canvas
+  if (activeTab === 'bonding') {
+    renderBondCanvas(animTime);
+  }
+
+  requestAnimationFrame(animateAll);
+}
+
+requestAnimationFrame(animateAll);
+</script>
+</body>
+</html>
